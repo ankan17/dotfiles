@@ -1,0 +1,19 @@
+{
+	"color_scheme": "Packages/Predawn/predawn.tmTheme",
+	"font_size": 11,
+	"gutter": true,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"line_padding_bottom": 1,
+	"line_padding_top": 1,
+	"margin": 2,
+	"rulers":
+	[
+		80
+	],
+	"theme": "predawn-DEV.sublime-theme",
+	"trim_trailing_white_space_on_save": true,
+	"word_wrap": true
+}
