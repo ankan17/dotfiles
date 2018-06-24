@@ -1,0 +1,8 @@
+{
+    "workbench.colorTheme": "Monokai",
+    "editor.minimap.enabled": false,
+    "window.zoomLevel": 0,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.wordWrap": "on",
+    "workbench.startupEditor": "newUntitledFile",
+}
