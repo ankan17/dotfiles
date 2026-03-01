@@ -1,0 +1,11 @@
+{
+    "workbench.colorTheme": "Cobalt2",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontFamily": "\"JetBrains Mono\", Firicico, Menlo, Monaco, 'Courier New', monospace",
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "all",
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "aws.telemetry": false
+}

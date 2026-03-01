@@ -1,0 +1,33 @@
+{
+    "workbench.colorTheme": "Cobalt2",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontFamily": "\"JetBrains Mono\", Firicico, Menlo, Monaco, 'Courier New', monospace",
+    "editor.tabSize": 2,
+    "editor.renderWhitespace": "all",
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "workbench.editor.closeOnFileDelete": true,
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "git.suggestSmartCommit": false,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "explorer.confirmDragAndDrop": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "workbench.editor.editorActionsLocation": "titleBar",
+    "explorer.confirmDelete": false,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "terminal.integrated.allowedLinkSchemes": [
+        "file",
+        "http",
+        "https",
+        "mailto",
+        "vscode",
+        "vscode-insiders",
+        "docker-desktop"
+    ],
+    "window.commandCenter": true,
+    "cursor.composer.usageSummaryDisplay": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always"
+}
