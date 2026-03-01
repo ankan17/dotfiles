@@ -1,7 +1,7 @@
 #!/bin/bash
-# Interactive dotfiles setup — symlinks configs from this repo to their expected locations.
+# Interactive dotfiles setup — installs tools and symlinks configs.
 # Usage: cd ~/dotfiles && ./setup.sh
-# Pass --all to skip prompts and install everything.
+# Pass --all to skip prompts and install/configure everything.
 
 set -e
 
@@ -17,6 +17,8 @@ ask() {
 }
 
 info() { printf "  \033[0;32m✓\033[0m %s\n" "$1"; }
+warn() { printf "  \033[0;33m!\033[0m %s\n" "$1"; }
+fail() { printf "  \033[0;31m✗\033[0m %s\n" "$1"; }
 skip() { printf "  \033[0;33m⊘\033[0m %s\n" "Skipped"; }
 
 echo ""
@@ -24,10 +26,155 @@ echo "╔═══════════════════════�
 echo "║         Dotfiles Setup Script        ║"
 echo "╚══════════════════════════════════════╝"
 
+# ============================================================
+# PHASE 1: Tool Installation
+# ============================================================
+
+echo ""
+echo "── Phase 1: Tool Installation ─────────"
+
+# --- Homebrew ---
+if ! command -v brew &> /dev/null; then
+  if ask "Install Homebrew? (required for installing other tools)"; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || eval "$(/usr/local/bin/brew shellenv)" 2>/dev/null
+    info "Homebrew installed"
+  else
+    skip
+  fi
+else
+  info "Homebrew already installed"
+fi
+
+# --- iTerm2 ---
+if [ ! -d "/Applications/iTerm.app" ]; then
+  if ask "Install iTerm2?"; then
+    brew install --cask iterm2
+    info "iTerm2 installed"
+  else
+    skip
+  fi
+else
+  info "iTerm2 already installed"
+fi
+
+# --- Zsh (macOS ships with zsh, but ensure latest) ---
+if ask "Install/update zsh via Homebrew?"; then
+  brew install zsh
+  info "zsh installed/updated"
+else
+  skip
+fi
+
+# --- Oh My Zsh ---
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  if ask "Install Oh My Zsh?"; then
+    RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    info "Oh My Zsh installed"
+  else
+    skip
+  fi
+else
+  info "Oh My Zsh already installed"
+fi
+
+# --- Oh My Zsh custom plugins ---
+if [ -d "$HOME/.oh-my-zsh" ]; then
+  ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+
+  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]; then
+    if ask "Install zsh-autosuggestions plugin?"; then
+      git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+      info "zsh-autosuggestions installed"
+    else
+      skip
+    fi
+  else
+    info "zsh-autosuggestions already installed"
+  fi
+
+  if [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+    if ask "Install zsh-syntax-highlighting plugin?"; then
+      git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+      info "zsh-syntax-highlighting installed"
+    else
+      skip
+    fi
+  else
+    info "zsh-syntax-highlighting already installed"
+  fi
+fi
+
+# --- VS Code ---
+if [ ! -d "/Applications/Visual Studio Code.app" ]; then
+  if ask "Install VS Code?"; then
+    brew install --cask visual-studio-code
+    info "VS Code installed"
+  else
+    skip
+  fi
+else
+  info "VS Code already installed"
+fi
+
+# --- Cursor ---
+if [ ! -d "/Applications/Cursor.app" ]; then
+  if ask "Install Cursor?"; then
+    brew install --cask cursor
+    info "Cursor installed"
+  else
+    skip
+  fi
+else
+  info "Cursor already installed"
+fi
+
+# --- Claude Code ---
+if ! command -v claude &> /dev/null; then
+  if ask "Install Claude Code?"; then
+    npm install -g @anthropic-ai/claude-code 2>/dev/null \
+      || bun install -g @anthropic-ai/claude-code 2>/dev/null \
+      || { fail "Could not install Claude Code — ensure npm or bun is available"; }
+    info "Claude Code installed"
+  else
+    skip
+  fi
+else
+  info "Claude Code already installed ($(claude --version 2>/dev/null))"
+fi
+
+# --- Bun ---
+if ! command -v bun &> /dev/null; then
+  if ask "Install Bun?"; then
+    curl -fsSL https://bun.sh/install | bash
+    info "Bun installed"
+  else
+    skip
+  fi
+else
+  info "Bun already installed"
+fi
+
+# ============================================================
+# PHASE 2: Configuration
+# ============================================================
+
+echo ""
+echo "── Phase 2: Configuration ─────────────"
+
 # --- Zsh ---
 if ask "Set up zsh config? (.zshrc with Oh My Zsh, plugins, aliases)"; then
   ln -sf "$DOTFILES_DIR/.zshrc" ~/.zshrc
   info "~/.zshrc -> $DOTFILES_DIR/.zshrc"
+else
+  skip
+fi
+
+# --- iTerm2 ---
+if ask "Set up iTerm2 preferences?"; then
+  cp "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist" ~/Library/Preferences/com.googlecode.iterm2.plist
+  info "iTerm2 preferences restored"
+  warn "Restart iTerm2 to apply changes"
 else
   skip
 fi
@@ -54,10 +201,10 @@ if ask "Set up Cursor? (settings + keybindings)"; then
   if ask "Install Cursor extensions from extensions.txt?"; then
     if command -v cursor &> /dev/null; then
       while read -r ext; do
-        cursor --install-extension "$ext" --force 2>/dev/null && info "$ext" || printf "  \033[0;31m✗\033[0m %s\n" "$ext"
+        cursor --install-extension "$ext" --force 2>/dev/null && info "$ext" || fail "$ext"
       done < "$DOTFILES_DIR/cursor/extensions.txt"
     else
-      printf "  \033[0;31m✗\033[0m %s\n" "cursor command not found — install Cursor first"
+      fail "cursor command not found — install Cursor first"
     fi
   else
     skip
@@ -81,13 +228,16 @@ else
   skip
 fi
 
-# --- Secrets reminder ---
+# ============================================================
+# Post-Setup
+# ============================================================
+
 echo ""
-echo "────────────────────────────────────────"
+echo "── Post-Setup ─────────────────────────"
 if [ -f ~/.secrets ]; then
   info "~/.secrets exists"
 else
-  printf "  \033[0;33m!\033[0m %s\n" "Create ~/.secrets with your tokens:"
+  warn "Create ~/.secrets with your tokens:"
   echo "    export GITLAB_TOKEN=\"...\""
   echo "    export JIRA_USER=\"...\""
   echo "    export JIRA_TOKEN=\"...\""

@@ -9,7 +9,12 @@ git clone git@github.com:ankan17/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./setup.sh
 ```
 
-The setup script is interactive — it will ask before setting up each component, so you can skip anything you don't need on a particular machine.
+The setup script runs in two phases:
+
+1. **Tool Installation** — installs missing tools via Homebrew (iTerm2, zsh, VS Code, Cursor, Claude Code, Bun) and sets up Oh My Zsh with plugins
+2. **Configuration** — symlinks config files from this repo to their expected locations
+
+Each step is interactive — it will ask before installing or configuring anything. Pass `--all` to skip prompts.
 
 ### Post-Setup
 
@@ -29,8 +34,13 @@ This file is sourced automatically by `.zshrc`.
 ### Shell (`.zshrc`)
 
 Oh My Zsh configuration with:
-- **Theme:** [oxide](https://github.com/dikiaap/dotfiles)
-- **Plugins:** git, docker, zsh-autosuggestions, zsh-syntax-highlighting
+
+- **Theme:** [oxide](https://github.com/dikiaap/dotfiles) (built-in OMZ theme)
+- **Plugins:**
+  - `git` — git aliases and completions (built-in)
+  - `docker` — docker completions (built-in)
+  - [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions (cloned to `~/.oh-my-zsh/custom/plugins/`)
+  - [`zsh-syntax-highlighting`](https://github.com/zsh-users/zsh-syntax-highlighting) — syntax highlighting in the shell (cloned to `~/.oh-my-zsh/custom/plugins/`)
 - **Aliases:**
   - `aws-login` — source AWS login script
   - `gs` — `git stash`
@@ -41,7 +51,19 @@ Oh My Zsh configuration with:
 
 **Symlink:** `~/.zshrc` -> `~/dotfiles/.zshrc`
 
-**Prerequisites:** [Oh My Zsh](https://ohmyz.sh/), [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions), [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting)
+### iTerm2 (`iterm2/`)
+
+Full iTerm2 preferences including profiles, colors, fonts, and keybindings.
+
+| File | Description |
+|------|-------------|
+| `com.googlecode.iterm2.plist` | Complete iTerm2 preferences (restored via copy, not symlink) |
+
+Unlike other configs, iTerm2 preferences are **copied** (not symlinked) because iTerm2 rewrites its plist frequently. To save updated preferences back to the repo:
+
+```bash
+cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/dotfiles/iterm2/
+```
 
 ### VS Code (`vscode/`)
 
@@ -85,6 +107,21 @@ cursor --list-extensions | sort > ~/dotfiles/cursor/extensions.txt
 
 **Symlinks:** `~/.claude/settings.json` -> `~/dotfiles/claude/settings.json`, `~/.claude/skills/*` -> `~/dotfiles/claude/skills/*`
 
+## Tool Installation
+
+The setup script can install these tools if they're missing:
+
+| Tool | Install Method | Notes |
+|------|---------------|-------|
+| [Homebrew](https://brew.sh/) | Official installer | Required for other installs |
+| [iTerm2](https://iterm2.com/) | `brew install --cask iterm2` | Terminal emulator |
+| [zsh](https://www.zsh.org/) | `brew install zsh` | macOS ships with zsh, this ensures latest |
+| [Oh My Zsh](https://ohmyz.sh/) | Official installer | Zsh framework for plugins and themes |
+| [VS Code](https://code.visualstudio.com/) | `brew install --cask visual-studio-code` | Code editor |
+| [Cursor](https://cursor.com/) | `brew install --cask cursor` | AI code editor |
+| [Claude Code](https://claude.com/claude-code) | `npm install -g @anthropic-ai/claude-code` | CLI AI coding assistant |
+| [Bun](https://bun.sh/) | Official installer | JS runtime and package manager |
+
 ## How It Works
 
 All config files live in this repo as the source of truth. The `setup.sh` script creates symlinks from the expected locations to this repo:
@@ -95,6 +132,7 @@ All config files live in this repo as the source of truth. The `setup.sh` script
 ~/Library/Application Support/Cursor/User/*.json  -> ~/dotfiles/cursor/*
 ~/.claude/settings.json                           -> ~/dotfiles/claude/settings.json
 ~/.claude/skills/*                                -> ~/dotfiles/claude/skills/*
+~/Library/Preferences/com.googlecode.iterm2.plist <- ~/dotfiles/iterm2/* (copied)
 ```
 
 Any changes made through normal usage (e.g. changing a VS Code setting via the UI) are automatically reflected in the repo. Just commit and push to sync.
@@ -113,3 +151,8 @@ cd ~/dotfiles && git pull
 ```
 
 No re-linking needed — symlinks still point to the same files.
+
+For iTerm2 (not symlinked), re-run the setup or copy manually:
+```bash
+cp ~/dotfiles/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/
+```
