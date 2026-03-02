@@ -33,9 +33,9 @@ echo "╚═══════════════════════�
 echo ""
 echo "── Phase 1: Tool Installation ─────────"
 
-# --- Homebrew ---
+# --- Homebrew (https://brew.sh/) ---
 if ! command -v brew &> /dev/null; then
-  if ask "Install Homebrew? (required for installing other tools)"; then
+  if ask "Install Homebrew?"; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || eval "$(/usr/local/bin/brew shellenv)" 2>/dev/null
     info "Homebrew installed"
@@ -46,10 +46,12 @@ else
   info "Homebrew already installed"
 fi
 
-# --- iTerm2 ---
+# --- iTerm2 (https://iterm2.com/downloads.html) ---
 if [ ! -d "/Applications/iTerm.app" ]; then
   if ask "Install iTerm2?"; then
-    brew install --cask iterm2
+    curl -fsSL https://iterm2.com/downloads/stable/latest -o /tmp/iTerm2.zip
+    unzip -qo /tmp/iTerm2.zip -d /Applications
+    rm -f /tmp/iTerm2.zip
     info "iTerm2 installed"
   else
     skip
@@ -58,15 +60,7 @@ else
   info "iTerm2 already installed"
 fi
 
-# --- Zsh (macOS ships with zsh, but ensure latest) ---
-if ask "Install/update zsh via Homebrew?"; then
-  brew install zsh
-  info "zsh installed/updated"
-else
-  skip
-fi
-
-# --- Oh My Zsh ---
+# --- Oh My Zsh (https://ohmyz.sh/) ---
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   if ask "Install Oh My Zsh?"; then
     RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -105,10 +99,31 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
   fi
 fi
 
-# --- VS Code ---
+# --- Bun (https://bun.sh/) ---
+if ! command -v bun &> /dev/null; then
+  if ask "Install Bun?"; then
+    curl -fsSL https://bun.sh/install | bash
+    source ~/.bashrc 2>/dev/null || source ~/.zshrc 2>/dev/null || true
+    info "Bun installed"
+  else
+    skip
+  fi
+else
+  info "Bun already installed"
+fi
+
+# --- VS Code (https://code.visualstudio.com/) ---
 if [ ! -d "/Applications/Visual Studio Code.app" ]; then
   if ask "Install VS Code?"; then
-    brew install --cask visual-studio-code
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "arm64" ]; then
+      VSCODE_URL="https://code.visualstudio.com/sha/download?build=stable&os=darwin-arm64"
+    else
+      VSCODE_URL="https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal"
+    fi
+    curl -fsSL "$VSCODE_URL" -o /tmp/VSCode.zip
+    unzip -qo /tmp/VSCode.zip -d /Applications
+    rm -f /tmp/VSCode.zip
     info "VS Code installed"
   else
     skip
@@ -117,10 +132,20 @@ else
   info "VS Code already installed"
 fi
 
-# --- Cursor ---
+# --- Cursor (https://cursor.com/) ---
 if [ ! -d "/Applications/Cursor.app" ]; then
   if ask "Install Cursor?"; then
-    brew install --cask cursor
+    ARCH=$(uname -m)
+    if [ "$ARCH" = "arm64" ]; then
+      CURSOR_URL="https://downloader.cursor.sh/mac/dmg/arm64"
+    else
+      CURSOR_URL="https://downloader.cursor.sh/mac/dmg/x64"
+    fi
+    curl -fsSL "$CURSOR_URL" -o /tmp/Cursor.dmg
+    hdiutil attach /tmp/Cursor.dmg -quiet -nobrowse -mountpoint /tmp/cursor-mount
+    cp -R /tmp/cursor-mount/Cursor.app /Applications/
+    hdiutil detach /tmp/cursor-mount -quiet
+    rm -f /tmp/Cursor.dmg
     info "Cursor installed"
   else
     skip
@@ -129,30 +154,16 @@ else
   info "Cursor already installed"
 fi
 
-# --- Claude Code ---
+# --- Claude Code (https://claude.ai/download) ---
 if ! command -v claude &> /dev/null; then
   if ask "Install Claude Code?"; then
-    npm install -g @anthropic-ai/claude-code 2>/dev/null \
-      || bun install -g @anthropic-ai/claude-code 2>/dev/null \
-      || { fail "Could not install Claude Code — ensure npm or bun is available"; }
+    curl -fsSL https://claude.ai/install.sh | bash
     info "Claude Code installed"
   else
     skip
   fi
 else
   info "Claude Code already installed ($(claude --version 2>/dev/null))"
-fi
-
-# --- Bun ---
-if ! command -v bun &> /dev/null; then
-  if ask "Install Bun?"; then
-    curl -fsSL https://bun.sh/install | bash
-    info "Bun installed"
-  else
-    skip
-  fi
-else
-  info "Bun already installed"
 fi
 
 # ============================================================

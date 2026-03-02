@@ -111,16 +111,17 @@ cursor --list-extensions | sort > ~/dotfiles/cursor/extensions.txt
 
 The setup script can install these tools if they're missing:
 
-| Tool | Install Method | Notes |
-|------|---------------|-------|
-| [Homebrew](https://brew.sh/) | Official installer | Required for other installs |
-| [iTerm2](https://iterm2.com/) | `brew install --cask iterm2` | Terminal emulator |
-| [zsh](https://www.zsh.org/) | `brew install zsh` | macOS ships with zsh, this ensures latest |
-| [Oh My Zsh](https://ohmyz.sh/) | Official installer | Zsh framework for plugins and themes |
-| [VS Code](https://code.visualstudio.com/) | `brew install --cask visual-studio-code` | Code editor |
-| [Cursor](https://cursor.com/) | `brew install --cask cursor` | AI code editor |
-| [Claude Code](https://claude.com/claude-code) | `npm install -g @anthropic-ai/claude-code` | CLI AI coding assistant |
-| [Bun](https://bun.sh/) | Official installer | JS runtime and package manager |
+| Tool | Install Method | Source |
+|------|---------------|--------|
+| [Homebrew](https://brew.sh/) | Official install script | `brew.sh` |
+| [iTerm2](https://iterm2.com/) | Direct download from `iterm2.com` | Official `.zip` |
+| [Oh My Zsh](https://ohmyz.sh/) | Official install script | `ohmyz.sh` |
+| [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | `git clone` from GitHub | Official repo |
+| [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | `git clone` from GitHub | Official repo |
+| [Bun](https://bun.sh/) | Official install script | `bun.sh/install` |
+| [VS Code](https://code.visualstudio.com/) | Direct download from `code.visualstudio.com` | Official `.zip` (arch-aware) |
+| [Cursor](https://cursor.com/) | Direct download from `downloader.cursor.sh` | Official `.dmg` (arch-aware) |
+| [Claude Code](https://claude.ai/download) | Official install script | `claude.ai/install.sh` |
 
 ## How It Works
 
