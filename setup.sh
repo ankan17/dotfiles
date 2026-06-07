@@ -3,7 +3,8 @@
 # Usage: cd ~/dotfiles && ./setup.sh
 # Pass --all to skip prompts and install/configure everything.
 
-set -e
+# Note: no `set -e` — a single tool's install failing should not abort the
+# whole run. Multi-step installs are guarded individually with subshells below.
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 ALL=false
@@ -99,6 +100,29 @@ if [ -d "$HOME/.oh-my-zsh" ]; then
   fi
 fi
 
+# --- Powerline fonts (required by the oxide theme's git-branch glyph) ---
+if ! ls "$HOME/Library/Fonts" 2>/dev/null | grep -qi "Powerline"; then
+  if ask "Install Powerline fonts? (needed for the oxide prompt theme)"; then
+    if (
+      set -e
+      git clone --depth 1 https://github.com/powerline/fonts.git /tmp/powerline-fonts
+      # Filter matches the on-disk filenames (FuraMono-*.otf); the installed
+      # font's family name is "Fira Mono for Powerline".
+      /tmp/powerline-fonts/install.sh "FuraMono"
+    ); then
+      info "Powerline fonts installed (Fira Mono for Powerline)"
+      warn "Set your terminal font to 'Fira Mono for Powerline' (iTerm2 prefs already do this)"
+    else
+      fail "Powerline fonts install failed — continuing"
+    fi
+    rm -rf /tmp/powerline-fonts
+  else
+    skip
+  fi
+else
+  info "Powerline fonts already installed"
+fi
+
 # --- Bun (https://bun.sh/) ---
 if ! command -v bun &> /dev/null; then
   if ask "Install Bun?"; then
@@ -110,6 +134,52 @@ if ! command -v bun &> /dev/null; then
   fi
 else
   info "Bun already installed"
+fi
+
+# --- nvm + Node 24 (https://github.com/nvm-sh/nvm) ---
+if [ ! -d "$HOME/.nvm" ]; then
+  if ask "Install nvm + Node 24?"; then
+    if (
+      set -e
+      # PROFILE=/dev/null: don't let the installer edit .zshrc (it's symlinked
+      # from this repo; the sourcing block lives in .zshrc directly).
+      PROFILE=/dev/null bash -c \
+        "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.5/install.sh)"
+      export NVM_DIR="$HOME/.nvm"
+      \. "$NVM_DIR/nvm.sh"
+      nvm install 24
+      nvm alias default 24
+    ); then
+      info "nvm + Node 24 installed"
+    else
+      fail "nvm + Node 24 install failed — continuing"
+    fi
+  else
+    skip
+  fi
+else
+  info "nvm already installed"
+  if (
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    nvm ls 24 &> /dev/null
+  ); then
+    info "Node 24 already installed"
+  elif ask "Install Node 24 via nvm?"; then
+    if (
+      set -e
+      export NVM_DIR="$HOME/.nvm"
+      \. "$NVM_DIR/nvm.sh"
+      nvm install 24
+      nvm alias default 24
+    ); then
+      info "Node 24 installed"
+    else
+      fail "Node 24 install failed — continuing"
+    fi
+  else
+    skip
+  fi
 fi
 
 # --- VS Code (https://code.visualstudio.com/) ---
@@ -136,17 +206,24 @@ fi
 if [ ! -d "/Applications/Cursor.app" ]; then
   if ask "Install Cursor?"; then
     ARCH=$(uname -m)
-    if [ "$ARCH" = "arm64" ]; then
-      CURSOR_URL="https://downloader.cursor.sh/mac/dmg/arm64"
+    [ "$ARCH" = "arm64" ] && CURSOR_PLATFORM="darwin-arm64" || CURSOR_PLATFORM="darwin-x64"
+    if (
+      set -e
+      # Resolve the real download URL from Cursor's download API.
+      CURSOR_URL=$(curl -fsSL "https://www.cursor.com/api/download?platform=$CURSOR_PLATFORM&releaseTrack=stable" \
+        | sed -n 's/.*"downloadUrl":"\([^"]*\)".*/\1/p')
+      [ -n "$CURSOR_URL" ]
+      curl -fsSL "$CURSOR_URL" -o /tmp/Cursor.dmg
+      hdiutil attach /tmp/Cursor.dmg -quiet -nobrowse -mountpoint /tmp/cursor-mount
+      cp -R /tmp/cursor-mount/Cursor.app /Applications/
+      hdiutil detach /tmp/cursor-mount -quiet
+    ); then
+      info "Cursor installed"
     else
-      CURSOR_URL="https://downloader.cursor.sh/mac/dmg/x64"
+      hdiutil detach /tmp/cursor-mount -quiet 2>/dev/null || true
+      fail "Cursor install failed — continuing"
     fi
-    curl -fsSL "$CURSOR_URL" -o /tmp/Cursor.dmg
-    hdiutil attach /tmp/Cursor.dmg -quiet -nobrowse -mountpoint /tmp/cursor-mount
-    cp -R /tmp/cursor-mount/Cursor.app /Applications/
-    hdiutil detach /tmp/cursor-mount -quiet
     rm -f /tmp/Cursor.dmg
-    info "Cursor installed"
   else
     skip
   fi
@@ -164,6 +241,26 @@ if ! command -v claude &> /dev/null; then
   fi
 else
   info "Claude Code already installed ($(claude --version 2>/dev/null))"
+fi
+
+# --- AWS CLI v2 (https://aws.amazon.com/cli/) ---
+if ! command -v aws &> /dev/null; then
+  if ask "Install AWS CLI v2? (requires sudo)"; then
+    if (
+      set -e
+      curl -fsSL "https://awscli.amazonaws.com/AWSCLIV2.pkg" -o /tmp/AWSCLIV2.pkg
+      sudo installer -pkg /tmp/AWSCLIV2.pkg -target /
+    ); then
+      info "AWS CLI installed ($(aws --version 2>&1))"
+    else
+      fail "AWS CLI install failed — continuing"
+    fi
+    rm -f /tmp/AWSCLIV2.pkg
+  else
+    skip
+  fi
+else
+  info "AWS CLI already installed ($(aws --version 2>&1 | cut -d' ' -f1))"
 fi
 
 # ============================================================

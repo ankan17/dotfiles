@@ -11,7 +11,7 @@ cd ~/dotfiles && ./setup.sh
 
 The setup script runs in two phases:
 
-1. **Tool Installation** — installs missing tools via Homebrew (iTerm2, zsh, VS Code, Cursor, Claude Code, Bun) and sets up Oh My Zsh with plugins
+1. **Tool Installation** — installs missing tools via official installers/downloads (iTerm2, VS Code, Cursor, Claude Code, Bun, nvm + Node 24, AWS CLI, Powerline fonts) and sets up Oh My Zsh with plugins
 2. **Configuration** — symlinks config files from this repo to their expected locations
 
 Each step is interactive — it will ask before installing or configuring anything. Pass `--all` to skip prompts.
@@ -118,10 +118,13 @@ The setup script can install these tools if they're missing:
 | [Oh My Zsh](https://ohmyz.sh/) | Official install script | `ohmyz.sh` |
 | [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions) | `git clone` from GitHub | Official repo |
 | [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting) | `git clone` from GitHub | Official repo |
+| [Powerline fonts](https://github.com/powerline/fonts) | `git clone` + `install.sh` | Fira Mono for Powerline (required by the oxide theme) |
 | [Bun](https://bun.sh/) | Official install script | `bun.sh/install` |
+| [nvm + Node 24](https://github.com/nvm-sh/nvm) | Official install script | `nvm-sh/nvm` (installs Node 24, set as default) |
 | [VS Code](https://code.visualstudio.com/) | Direct download from `code.visualstudio.com` | Official `.zip` (arch-aware) |
-| [Cursor](https://cursor.com/) | Direct download from `downloader.cursor.sh` | Official `.dmg` (arch-aware) |
+| [Cursor](https://cursor.com/) | Direct download via `cursor.com/api/download` | Official `.dmg` (arch-aware) |
 | [Claude Code](https://claude.ai/download) | Official install script | `claude.ai/install.sh` |
+| [AWS CLI v2](https://aws.amazon.com/cli/) | Official `.pkg` installer (needs sudo) | `awscli.amazonaws.com/AWSCLIV2.pkg` |
 
 ## How It Works
 

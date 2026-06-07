@@ -101,7 +101,21 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 [ -f ~/.aliases ] && source ~/.aliases
 
+# bun completions
+[ -s "/Users/ankanpoddar/.bun/_bun" ] && source "/Users/ankanpoddar/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export NODE_EXTRA_CA_CERTS="/Users/ankanpoddar/Downloads/Zscaler.pem"
+
+export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$HOME/.aws:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
 [ -f ~/.secrets ] && source ~/.secrets
+
