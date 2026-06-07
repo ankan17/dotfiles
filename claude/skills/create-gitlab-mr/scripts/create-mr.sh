@@ -74,6 +74,12 @@ echo "  Target: $TARGET_BRANCH"
 echo "  Project: $PROJECT_PATH"
 echo "  Host: $GITLAB_HOST"
 
+# Squash commits by default, except when merging dev → main/master
+SQUASH=true
+if [ "$CURRENT_BRANCH" = "dev" ] && [[ "$TARGET_BRANCH" =~ ^(main|master)$ ]]; then
+  SQUASH=false
+fi
+
 # Create MR via API
 RESPONSE=$(curl -s --request POST \
   --header "PRIVATE-TOKEN: $GITLAB_TOKEN" \
@@ -85,7 +91,8 @@ RESPONSE=$(curl -s --request POST \
   "target_branch": "$TARGET_BRANCH",
   "title": "$TITLE",
   "description": $(echo "$DESCRIPTION" | jq -Rs .),
-  "remove_source_branch": true
+  "remove_source_branch": true,
+  "squash": $SQUASH
 }
 EOF
 )

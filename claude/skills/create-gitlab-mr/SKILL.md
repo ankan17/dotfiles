@@ -138,7 +138,7 @@ What are you changing? Why are you changing it?
 
 ## Test Plan
 
-How to manually test the changes? What all should be considered while testing?
+How to manually test the changes? What all should be considered while testing? Only include manual testing steps — do not mention automated tests or test commands here.
 
 ## QA Risk
 
@@ -158,7 +158,7 @@ If something goes wrong, what's the worst that could happen? Classify it as Low,
 - [ ] Release notes have been created/updated as part of the release
 ```
 
-Fill in the Description, Test Plan, and QA Risk sections based on the analyzed changes. Keep every checklist item — do not remove any.
+Fill in the Description, Test Plan, and QA Risk sections based on the analyzed changes. The Test Plan should only contain manual testing steps — do not include automated test commands or test suite results. Keep every checklist item — do not remove any.
 
 #### 7b: Verify and attempt to fulfil each checklist item (MANDATORY — DO NOT SKIP)
 
@@ -229,12 +229,15 @@ curl --request POST \
     "target_branch": "<target_branch>",
     "title": "<MR title>",
     "description": "<generated description>",
-    "remove_source_branch": true
+    "remove_source_branch": true,
+    "squash": true
   }' \
   "https://gitlab.com/api/v4/projects/<url_encoded_project_path>/merge_requests"
 ```
 
 **Important**: URL-encode the project path (e.g., `group/project` → `group%2Fproject`).
+
+**Squash commits**: `"squash": true` is set by default. Only set `"squash": false` when the source branch is `dev` and the target is `main` or `master`.
 
 ### Step 11: Output Result
 
@@ -242,6 +245,30 @@ On success, display:
 - MR URL (from response `web_url`)
 - MR IID (from response `iid`)
 - Target branch used
+
+### Step 12: Share on #vkyc-mr-reviews (OPTIONAL)
+
+After the MR is created, ask the user if they want to share it on the `#vkyc-mr-reviews` Slack channel for review.
+
+If the user agrees:
+
+1. **Read the channel** (`C09D4NH4JG2`) to find today's date thread (format: `` `MR Reviews: <date>` ``, e.g. `` `MR Reviews: 31st March` ``).
+2. **If a thread for today exists**, reply to it with:
+   - The MR URL
+   - A one-line summary of the changes
+   - Tag the reviewers the user specifies (ask who to tag)
+3. **If no thread for today exists**, look at recent threads to match the naming convention, then create a new top-level message (e.g. `` `MR Reviews: 1st April` ``) and post the MR as the first reply.
+
+**Format** (match existing convention in the channel):
+```
+<MR URL>
+
+<One-line summary of changes>
+
+<@reviewer1> <@reviewer2> kindly review and approve
+```
+
+Use Slack user IDs (not display names) when tagging. Look up IDs from recent channel messages or use `slack_search_users`.
 
 ## Error Handling
 
@@ -284,3 +311,5 @@ For self-hosted GitLab instances, extract the host from the remote URL:
 11. Generate title: `HP-1234 Add user authentication` (no `feat:` prefix; title case per Preferences)
 12. Create MR via API
 13. Return MR URL to user
+14. Ask: "Want to share this on #vkyc-mr-reviews?" → user says yes, tag Vivek and Garvit
+15. Find today's thread in `C09D4NH4JG2` → reply with MR link + summary + `<@U04E6SJ3MB7> <@U0A750KAS1X> kindly review and approve`
