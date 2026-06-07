@@ -97,23 +97,10 @@ source $ZSH/oh-my-zsh.sh
 # export ARCHFLAGS="-arch x86_64"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
-# plugins, and themes. Aliases can be placed here, though oh-my-zsh
-# users are encouraged to define aliases within the ZSH_CUSTOM folder.
+# plugins, and themes. Aliases are to be placed in the ~/.aliases file.
 # For a full list of active aliases, run `alias`.
+[ -f ~/.aliases ] && source ~/.aliases
 
-alias aws-login="source ~/aws-login.sh"
-alias gs="git stash"
-alias sshc="bash ~/Projects/scripts/ssh_ec2.sh"
-alias cursor="/Applications/Cursor.app/Contents/Resources/app/bin/cursor"
-
-# bun completions
-[ -s "/Users/ankanpoddar/.bun/_bun" ] && source "/Users/ankanpoddar/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export NODE_EXTRA_CA_CERTS="/Users/ankanpoddar/Downloads/Zscaler.pem"
-
-export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$HOME/.aws:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
