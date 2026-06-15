@@ -15,8 +15,7 @@ parts=""
 [ -n "$effort" ] && parts="$parts | effort:$effort"
 
 if [ -n "$used" ]; then
-  remaining=$(echo "$used" | awk '{printf "%.0f", 100 - $1}')
-  parts="$parts | ctx:${remaining}% left"
+  parts="$parts | ctx:${used}% used"
 fi
 
 printf '%s' "$parts"
