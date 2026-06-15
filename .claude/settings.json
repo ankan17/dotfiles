@@ -1,0 +1,9 @@
+{
+  "enabledPlugins": {
+    "slack@claude-plugins-official": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "sh /Users/ankan/.claude/statusline-command.sh"
+  }
+}
