@@ -322,18 +322,40 @@ else
 fi
 
 # --- Claude Code ---
-if ask "Set up Claude Code? (settings + custom skills)"; then
+if ask "Set up Claude Code? (settings + skills + commands)"; then
   mkdir -p ~/.claude/skills
-  ln -sf "$DOTFILES_DIR/claude/settings.json" ~/.claude/settings.json
+  ln -sf "$DOTFILES_DIR/.claude/settings.json" ~/.claude/settings.json
+  ln -sf "$DOTFILES_DIR/.claude/statusline-command.sh" ~/.claude/statusline-command.sh
   info "Claude Code settings symlinked"
 
-  for skill in "$DOTFILES_DIR"/claude/skills/*/; do
+  # Skills are symlinked individually so Claude-installed skills can coexist.
+  for skill in "$DOTFILES_DIR"/.claude/skills/*/; do
     skill_name="$(basename "$skill")"
-    ln -sf "$skill" ~/.claude/skills/"$skill_name"
+    ln -sfn "$skill" ~/.claude/skills/"$skill_name"
     info "Skill: $skill_name"
   done
+
+  # Commands: symlink the whole dir so new commands sync automatically.
+  ln -sfn "$DOTFILES_DIR/.claude/commands" ~/.claude/commands
+  info "Commands symlinked"
 else
   skip
+fi
+
+# --- Claude Code plugins (reinstalled from manifest, not committed) ---
+if command -v claude &> /dev/null && [ -f "$DOTFILES_DIR/.claude/plugins.txt" ]; then
+  if ask "Restore Claude Code plugins from plugins.txt?"; then
+    while read -r kind arg; do
+      [[ -z "$kind" || "$kind" == \#* ]] && continue
+      case "$kind" in
+        marketplace) claude plugin marketplace add "$arg" >/dev/null 2>&1 && info "marketplace: $arg" || warn "marketplace failed: $arg" ;;
+        plugin)      claude plugin install "$arg"          >/dev/null 2>&1 && info "plugin: $arg"      || warn "plugin failed: $arg" ;;
+      esac
+    done < "$DOTFILES_DIR/.claude/plugins.txt"
+    warn "Restart Claude Code to load newly installed plugins"
+  else
+    skip
+  fi
 fi
 
 # ============================================================

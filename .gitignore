@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# Claude Code — machine-local state, caches, history, and secrets.
+# Only settings.json, statusline-command.sh, skills/, commands/, and plugins.txt
+# under .claude/ are tracked; everything below is regenerable or machine-specific.
+.claude/settings.local.json
+.claude/history.jsonl
+.claude/*-cache.json
+.claude/.last-*
+.claude/remote-settings.json
+.claude/policy-limits.json
+.claude/backups/
+.claude/cache/
+.claude/plugins/cache/
+.claude/plugins/marketplaces/
+.claude/plugins/*-cache.json
+.claude/plugins/.last_*
+.claude/projects/
+.claude/sessions/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/file-history/
+.claude/paste-cache/
+.claude/telemetry/
+.claude/plans/
+.claude/downloads/
+.claude/statsig/

@@ -41,13 +41,12 @@ Oh My Zsh configuration with:
   - `docker` — docker completions (built-in)
   - [`zsh-autosuggestions`](https://github.com/zsh-users/zsh-autosuggestions) — fish-like autosuggestions (cloned to `~/.oh-my-zsh/custom/plugins/`)
   - [`zsh-syntax-highlighting`](https://github.com/zsh-users/zsh-syntax-highlighting) — syntax highlighting in the shell (cloned to `~/.oh-my-zsh/custom/plugins/`)
-- **Aliases:**
-  - `aws-login` — source AWS login script
-  - `gs` — `git stash`
-  - `sshc` — SSH into EC2 instances via helper script
-  - `cursor` — launch Cursor from terminal
-- **Runtime:** Bun (completions + PATH), Zscaler CA cert for Node
-- **Secrets:** sourced from `~/.secrets` (not tracked)
+- **PATH additions:** `~/.aws`, `~/.local/bin`
+- **Runtime:** `nvm` loaded (from `~/.nvm`)
+- **Aliases:** sourced from `~/.aliases` if present (not tracked — keep personal aliases there)
+- **Secrets:** sourced from `~/.secrets` if present (not tracked)
+
+The tracked `.zshrc` deliberately keeps only the Oh My Zsh setup and these source hooks. Anything personal or machine-specific (aliases, tokens) lives in the untracked `~/.aliases` / `~/.secrets` files so it never gets committed.
 
 **Symlink:** `~/.zshrc` -> `~/dotfiles/.zshrc`
 

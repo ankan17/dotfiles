@@ -1,0 +1,21 @@
+# Claude Code plugins manifest — restored by setup.sh via the `claude plugin` CLI.
+# The plugin code itself (~/.claude/plugins/cache, ~58 MB) is regenerable and NOT
+# committed; this list is the source of truth for what to reinstall.
+#
+# Format:
+#   marketplace <github-repo-or-source>   -> claude plugin marketplace add <source>
+#   plugin <name>@<marketplace>           -> claude plugin install <name>@<marketplace>
+# Blank lines and lines starting with # are ignored.
+
+# --- Marketplaces ---
+marketplace anthropics/claude-plugins-official
+marketplace AgriciDaniel/claude-obsidian
+marketplace anthropics/skills
+
+# --- Plugins ---
+plugin slack@claude-plugins-official
+plugin vercel@claude-plugins-official
+plugin frontend-design@claude-plugins-official
+plugin superpowers@claude-plugins-official
+plugin skill-creator@claude-plugins-official
+plugin claude-obsidian@agricidaniel-claude-obsidian
