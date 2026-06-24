@@ -9,16 +9,23 @@
   "enabledPlugins": {
     "slack@claude-plugins-official": true,
     "claude-obsidian@agricidaniel-claude-obsidian": true,
-    "vercel@claude-plugins-official": true,
+    "vercel@claude-plugins-official": false,
     "frontend-design@claude-plugins-official": true,
     "superpowers@claude-plugins-official": true,
-    "skill-creator@claude-plugins-official": true
+    "skill-creator@claude-plugins-official": true,
+    "gws@gws-local": false
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
       "source": {
         "source": "github",
         "repo": "anthropics/skills"
+      }
+    },
+    "gws-local": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/ankan/.claude/gws-local"
       }
     }
   },
