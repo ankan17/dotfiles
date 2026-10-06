@@ -103,6 +103,7 @@ cursor --list-extensions | sort > ~/dotfiles/cursor/extensions.txt
 | `skills/create-gitlab-mr/` | Custom `/create-gitlab-mr` slash command — creates GitLab MRs with auto-detected target branch, MR templates, and Jira linking |
 | `skills/create-jira/` | Custom `/create-jira` slash command — creates Jira issues from Claude Code |
 | `skills/review-mr/` | Custom `/review-mr` slash command — reviews merge requests for code quality |
+| `hooks/compress_hook.py` | PostToolUse hook: large search/log Bash and MCP outputs are summarized by Sonnet before the main model reads them; raw copies go to `~/.cache/compress-hook/raw` (pruned weekly by a cron job `setup.sh` installs) |
 
 **Symlinks:** `~/.claude/settings.json` -> `~/dotfiles/claude/settings.json`, `~/.claude/skills/*` -> `~/dotfiles/claude/skills/*`
 

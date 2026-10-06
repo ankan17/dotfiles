@@ -338,6 +338,16 @@ if ask "Set up Claude Code? (settings + skills + commands)"; then
   # Commands: symlink the whole dir so new commands sync automatically.
   ln -sfn "$DOTFILES_DIR/.claude/commands" ~/.claude/commands
   info "Commands symlinked"
+
+  # Hooks: symlink the whole dir; settings.json references ~/.claude/hooks/*.
+  ln -sfn "$DOTFILES_DIR/.claude/hooks" ~/.claude/hooks
+  info "Hooks symlinked"
+
+  # Weekly cleanup of raw outputs archived by compress_hook.py (idempotent).
+  ( crontab -l 2>/dev/null | grep -v 'compress-hook/raw'
+    echo '0 10 * * 1 /usr/bin/find "$HOME/.cache/compress-hook/raw" -type f -mtime +7 -delete'
+  ) | crontab -
+  info "compress-hook cleanup cron installed"
 else
   skip
 fi
