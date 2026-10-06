@@ -104,6 +104,7 @@ cursor --list-extensions | sort > ~/.dotfiles/cursor/extensions.txt
 | `skills/create-jira/` | Custom `/create-jira` slash command — creates Jira issues from Claude Code |
 | `skills/review-mr/` | Custom `/review-mr` slash command — reviews merge requests for code quality |
 | `commands/weekly-journal.md` | `/weekly-journal` - appends the week's commits and Claude Code sessions to the vault's Weekly Journal. Needs `JOURNAL_VAULT`, `JOURNAL_PROJECT_DIRS` and optionally `JOURNAL_CLAUDE_DIRS` in `~/.aliases`; a `JOURNAL.md` in a project dir adds that project's own section and rules |
+| `../launchd/` | `com.ankan.weekly-journal` launchd job: runs `/weekly-journal` headless every Tuesday 21:00 under the profile in `JOURNAL_CLAUDE_CONFIG` (default `~/.claude`), logs to `~/Library/Logs/weekly-journal.log`, and posts a macOS notification on failure. `setup.sh` installs it |
 | `hooks/compress_hook.py` | PostToolUse hook: large search/log Bash and MCP outputs are summarized by Sonnet before the main model reads them; raw copies go to `~/.cache/compress-hook/raw` (pruned weekly by a cron job `setup.sh` installs) |
 
 **Symlinks:** `~/.claude/settings.json` -> `~/.dotfiles/claude/settings.json`, `~/.claude/skills/*` -> `~/.dotfiles/claude/skills/*`

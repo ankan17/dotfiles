@@ -348,6 +348,12 @@ if ask "Set up Claude Code? (settings + skills + commands)"; then
     echo '0 10 * * 1 /usr/bin/find "$HOME/.cache/compress-hook/raw" -type f -mtime +7 -delete'
   ) | crontab -
   info "compress-hook cleanup cron installed"
+
+  # /weekly-journal every Tuesday 21:00 (needs JOURNAL_* in ~/.aliases).
+  plist=~/Library/LaunchAgents/com.ankan.weekly-journal.plist
+  sed "s|__HOME__|$HOME|g" "$DOTFILES_DIR/launchd/com.ankan.weekly-journal.plist" > "$plist"
+  launchctl bootout "gui/$(id -u)/com.ankan.weekly-journal" 2>/dev/null
+  launchctl bootstrap "gui/$(id -u)" "$plist" && info "weekly-journal launchd job loaded" || warn "weekly-journal job failed to load"
 else
   skip
 fi
