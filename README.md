@@ -5,8 +5,8 @@ Personal configuration files and tools, managed with symlinks. Editing config fi
 ## Quick Start
 
 ```bash
-git clone git@github.com:ankan17/dotfiles.git ~/dotfiles
-cd ~/dotfiles && ./setup.sh
+git clone git@github.com:ankan17/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && ./setup.sh
 ```
 
 The setup script runs in two phases:
@@ -48,7 +48,7 @@ Oh My Zsh configuration with:
 
 The tracked `.zshrc` deliberately keeps only the Oh My Zsh setup and these source hooks. Anything personal or machine-specific (aliases, tokens) lives in the untracked `~/.aliases` / `~/.secrets` files so it never gets committed.
 
-**Symlink:** `~/.zshrc` -> `~/dotfiles/.zshrc`
+**Symlink:** `~/.zshrc` -> `~/.dotfiles/.zshrc`
 
 ### iTerm2 (`iterm2/`)
 
@@ -61,7 +61,7 @@ Full iTerm2 preferences including profiles, colors, fonts, and keybindings.
 Unlike other configs, iTerm2 preferences are **copied** (not symlinked) because iTerm2 rewrites its plist frequently. To save updated preferences back to the repo:
 
 ```bash
-cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/dotfiles/iterm2/
+cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/.dotfiles/iterm2/
 ```
 
 ### VS Code (`vscode/`)
@@ -71,7 +71,7 @@ cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/dotfiles/iterm2/
 | `settings.json` | Cobalt2 theme, Material Icon theme, JetBrains Mono font, tab size 2, render whitespace |
 | `keybindings.json` | `alt+p` — prettify JSON |
 
-**Symlinks:** `~/Library/Application Support/Code/User/{settings,keybindings}.json` -> `~/dotfiles/vscode/*`
+**Symlinks:** `~/Library/Application Support/Code/User/{settings,keybindings}.json` -> `~/.dotfiles/vscode/*`
 
 ### Cursor (`cursor/`)
 
@@ -88,11 +88,11 @@ cp ~/Library/Preferences/com.googlecode.iterm2.plist ~/dotfiles/iterm2/
 - **Tools:** Docker, Bookmarks, Live Server, Makefile Tools, SonarLint, Markdown Preview Enhanced
 - **AI:** Claude Code
 
-**Symlinks:** `~/Library/Application Support/Cursor/User/{settings,keybindings}.json` -> `~/dotfiles/cursor/*`
+**Symlinks:** `~/Library/Application Support/Cursor/User/{settings,keybindings}.json` -> `~/.dotfiles/cursor/*`
 
 To update the extensions list after installing/removing extensions:
 ```bash
-cursor --list-extensions | sort > ~/dotfiles/cursor/extensions.txt
+cursor --list-extensions | sort > ~/.dotfiles/cursor/extensions.txt
 ```
 
 ### Claude Code (`claude/`)
@@ -103,9 +103,10 @@ cursor --list-extensions | sort > ~/dotfiles/cursor/extensions.txt
 | `skills/create-gitlab-mr/` | Custom `/create-gitlab-mr` slash command — creates GitLab MRs with auto-detected target branch, MR templates, and Jira linking |
 | `skills/create-jira/` | Custom `/create-jira` slash command — creates Jira issues from Claude Code |
 | `skills/review-mr/` | Custom `/review-mr` slash command — reviews merge requests for code quality |
+| `commands/weekly-journal.md` | `/weekly-journal` - appends the week's commits and Claude Code sessions to the vault's Weekly Journal. Needs `JOURNAL_VAULT`, `JOURNAL_PROJECT_DIRS` and optionally `JOURNAL_CLAUDE_DIRS` in `~/.aliases`; a `JOURNAL.md` in a project dir adds that project's own section and rules |
 | `hooks/compress_hook.py` | PostToolUse hook: large search/log Bash and MCP outputs are summarized by Sonnet before the main model reads them; raw copies go to `~/.cache/compress-hook/raw` (pruned weekly by a cron job `setup.sh` installs) |
 
-**Symlinks:** `~/.claude/settings.json` -> `~/dotfiles/claude/settings.json`, `~/.claude/skills/*` -> `~/dotfiles/claude/skills/*`
+**Symlinks:** `~/.claude/settings.json` -> `~/.dotfiles/claude/settings.json`, `~/.claude/skills/*` -> `~/.dotfiles/claude/skills/*`
 
 ## Tool Installation
 
@@ -131,12 +132,12 @@ The setup script can install these tools if they're missing:
 All config files live in this repo as the source of truth. The `setup.sh` script creates symlinks from the expected locations to this repo:
 
 ```
-~/.zshrc                                          -> ~/dotfiles/.zshrc
-~/Library/Application Support/Code/User/*.json    -> ~/dotfiles/vscode/*
-~/Library/Application Support/Cursor/User/*.json  -> ~/dotfiles/cursor/*
-~/.claude/settings.json                           -> ~/dotfiles/claude/settings.json
-~/.claude/skills/*                                -> ~/dotfiles/claude/skills/*
-~/Library/Preferences/com.googlecode.iterm2.plist <- ~/dotfiles/iterm2/* (copied)
+~/.zshrc                                          -> ~/.dotfiles/.zshrc
+~/Library/Application Support/Code/User/*.json    -> ~/.dotfiles/vscode/*
+~/Library/Application Support/Cursor/User/*.json  -> ~/.dotfiles/cursor/*
+~/.claude/settings.json                           -> ~/.dotfiles/claude/settings.json
+~/.claude/skills/*                                -> ~/.dotfiles/claude/skills/*
+~/Library/Preferences/com.googlecode.iterm2.plist <- ~/.dotfiles/iterm2/* (copied)
 ```
 
 Any changes made through normal usage (e.g. changing a VS Code setting via the UI) are automatically reflected in the repo. Just commit and push to sync.
@@ -144,19 +145,19 @@ Any changes made through normal usage (e.g. changing a VS Code setting via the U
 ## Syncing Changes
 
 ```bash
-cd ~/dotfiles
+cd ~/.dotfiles
 git add -A && git commit -m "description of change"
 git push
 ```
 
 On another machine:
 ```bash
-cd ~/dotfiles && git pull
+cd ~/.dotfiles && git pull
 ```
 
 No re-linking needed — symlinks still point to the same files.
 
 For iTerm2 (not symlinked), re-run the setup or copy manually:
 ```bash
-cp ~/dotfiles/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/
+cp ~/.dotfiles/iterm2/com.googlecode.iterm2.plist ~/Library/Preferences/
 ```
