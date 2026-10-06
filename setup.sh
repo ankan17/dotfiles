@@ -1,6 +1,6 @@
 #!/bin/bash
 # Interactive dotfiles setup — installs tools and symlinks configs.
-# Usage: cd ~/dotfiles && ./setup.sh
+# Usage: cd ~/.dotfiles && ./setup.sh
 # Pass --all to skip prompts and install/configure everything.
 
 # Note: no `set -e` — a single tool's install failing should not abort the

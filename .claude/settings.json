@@ -2,6 +2,7 @@
   "permissions": {
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
   "statusLine": {
     "type": "command",
     "command": "sh /Users/ankan/.claude/statusline-command.sh"
@@ -11,9 +12,11 @@
     "claude-obsidian@agricidaniel-claude-obsidian": true,
     "vercel@claude-plugins-official": false,
     "frontend-design@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "gws@gws-local": false
+    "gws@gws-local": false,
+    "superpowers@superpowers-marketplace": true,
+    "ponytail@ponytail": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "anthropic-agent-skills": {
@@ -27,10 +30,36 @@
         "source": "directory",
         "path": "/Users/ankan/.claude/gws-local"
       }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
     }
   },
+  "tui": "default",
+  "voice": {
+    "enabled": false,
+    "mode": "hold"
+  },
+  "theme": "dark",
   "editorMode": "normal",
   "autoCompactEnabled": false,
+  "agentPushNotifEnabled": true,
+  "voiceEnabled": false,
   "env": {
     "BASH_MAX_OUTPUT_LENGTH": "200000"
   },
